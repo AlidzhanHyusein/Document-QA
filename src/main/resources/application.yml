@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: docqa-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/docqa_db
+    username: postgres
+    password: idkman321@
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+           model: gpt-3.5-turbo
+
+jwt:
+  secret: e1HnS7n2fzRPitGydiZPKYbMaFajxMM7KvR6PtKztmR
+  expiration: 86400000
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+openai:
+  api:
+    key: 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
+    url: https://api.openai.com/v1/chat/completions
+    model: gpt-3.5-turbo
