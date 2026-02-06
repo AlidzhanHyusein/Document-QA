@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/questions")
 @Tag(name = "Question & Answer", description = "AI-powered document Q&A")
 public class QuestionController {
 
     private final QuestionService questionService;
+
 
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;

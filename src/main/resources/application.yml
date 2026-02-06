@@ -26,7 +26,7 @@ spring:
            model: gpt-3.5-turbo
 
 jwt:
-  secret: e1HnS7n2fzRPitGydiZPKYbMaFajxMM7KvR6PtKztmR
+  secret: nCDzLMxlEAcka998qeLbh9uhDkrsa2JFVzXsz7sBpMg5TIKeL90clwb3lBP414yo
   expiration: 86400000
 
 springdoc:

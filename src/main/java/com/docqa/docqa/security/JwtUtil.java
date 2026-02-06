@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +32,7 @@ public class JwtUtil {
     }
 
     public String createToken(Map<String,Object> claims,String subject){
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
@@ -47,8 +47,8 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, String username){
-        final String extractUsername = extractUsername(username);
-        return (extractUsername.equals(username) && !isTokenExpired(token));
+        final String extractedUsername = extractUsername(token);
+        return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
 
     private Boolean isTokenExpired(String token) {
@@ -65,8 +65,7 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token){
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
-
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
