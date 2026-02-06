@@ -4,6 +4,7 @@ import com.docqa.docqa.dto.request.DocumentUploadRequest;
 import com.docqa.docqa.dto.response.DocumentResponse;
 import com.docqa.docqa.dto.response.DocumentUploadResponse;
 import com.docqa.docqa.exception.FileProcessingException;
+import com.docqa.docqa.security.SecurityUtil;
 import com.docqa.docqa.service.DocumentService;
 import com.docqa.docqa.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,17 +18,19 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/documents")
 @Tag(name = "Document Manager",description = "Api for managing documents")
 public class DocumentController {
 
     private final DocumentService documentService;
     private final FileService fileService;
+    private final SecurityUtil securityUtil;
 
-    public DocumentController(DocumentService documentService, FileService fileService){
+    public DocumentController(DocumentService documentService, FileService fileService, SecurityUtil securityUtil){
         this.documentService = documentService;
         this.fileService = fileService;
+        this.securityUtil = securityUtil;
     }
 
 

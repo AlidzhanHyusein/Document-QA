@@ -1,5 +1,6 @@
 package com.docqa.docqa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,7 @@ public class QuestionHistory {
     private Long responseTimeMs;
 
     @ManyToOne
-    @JoinColumn(name = "document_id")
+    @JoinColumn(name = "document_id",nullable = false)
+    @JsonBackReference
     private Document document;
 }

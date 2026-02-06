@@ -5,9 +5,12 @@ import com.docqa.docqa.dto.response.QuestionHistoryResponse;
 import com.docqa.docqa.dto.response.QuestionResponse;
 import com.docqa.docqa.entity.Document;
 import com.docqa.docqa.entity.QuestionHistory;
+import com.docqa.docqa.entity.User;
 import com.docqa.docqa.exception.DocumentNotFoundException;
+import com.docqa.docqa.exception.FileProcessingException;
 import com.docqa.docqa.repository.DocumentRepository;
 import com.docqa.docqa.repository.QuestionHistoryRepository;
+import com.docqa.docqa.security.SecurityUtil;
 import com.docqa.docqa.service.AIService;
 import com.docqa.docqa.service.QuestionService;
 import org.springframework.stereotype.Service;
@@ -21,16 +24,24 @@ public class QuestionServiceImpl implements QuestionService {
     private final DocumentRepository documentRepository;
     private final AIService aiService;
     private final QuestionHistoryRepository questionRepository;
+    private final SecurityUtil securityUtil;
 
-    public QuestionServiceImpl(DocumentRepository documentRepository, AIService aiService, QuestionHistoryRepository questionRepository) {
+    public QuestionServiceImpl(DocumentRepository documentRepository, AIService aiService, QuestionHistoryRepository questionRepository, SecurityUtil securityUtil) {
         this.documentRepository = documentRepository;
         this.aiService = aiService;
         this.questionRepository = questionRepository;
+        this.securityUtil = securityUtil;
     }
 
     @Override
     public QuestionResponse askQuestion(QuestionRequest request) {
         Document document = documentRepository.findById(request.getDocumentId()).orElseThrow(() -> new DocumentNotFoundException("Document not found"));
+        User currentUser = securityUtil.getCurrentUser();
+
+
+        if (!document.getUser().getId().equals(currentUser.getId())) {
+            throw new FileProcessingException("Access denied: Document does not belong to you");
+        }
 
         String content = document.getContent();
 
@@ -70,6 +81,12 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionHistoryResponse> getHistoryByDocumentId(Long documentId) {
         Document document = documentRepository.findById(documentId).orElseThrow(() -> new DocumentNotFoundException("Document with id " + documentId + " does not exist"));
+        User currentUser = securityUtil.getCurrentUser();
+
+        if (!document.getUser().getId().equals(currentUser.getId())) {
+            throw new FileProcessingException("Access denied: Document does not belong to you");
+        }
+
         List<QuestionHistory> history = questionRepository.findByDocument_Id(documentId);
 
         return history.stream().map(this::toQuestionHistory).collect(Collectors.toList());
